@@ -27,5 +27,6 @@ check 200 PUT    "/api/products/$PID" '{"price":450}'
 grep -q '"price":450' /tmp/e2e_body || { echo "FAILED: price not updated"; exit 1; }
 check 200 DELETE "/api/products/$PID"
 check 404 GET    "/api/products/$PID"
+check 404 GET /api/products/MISSING
 
 echo "ALL E2E TESTS PASSED"

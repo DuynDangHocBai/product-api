@@ -127,3 +127,35 @@ jobs:
           done
           if [ "$STATUS" != "healthy" ]; then docker logs api; exit 1; fi
           bash scripts/e2e-test.sh http://localhost:3000
+
+  deploy-local:
+    name: CD - Deploy to local Docker Engine
+    runs-on: [self-hosted, Windows, product-local]
+    needs: cd-dockerhub
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set image tag for this commit
+        run: echo "IMAGE_TAG=sha-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Pull new image from Docker Hub
+        run: docker compose -f docker-compose-prod.yaml pull
+
+      - name: Deploy and wait until healthy
+        run: docker compose -f docker-compose-prod.yaml up -d --wait --wait-timeout 120
+
+      - name: Show deployed containers
+        run: docker compose -f docker-compose-prod.yaml ps
+
+      - name: Smoke test (E2E) on local deployment
+        run: bash scripts/e2e-test.sh http://localhost:8080
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f docker-compose-prod.yaml logs --tail 100

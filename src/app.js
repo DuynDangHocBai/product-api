@@ -5,6 +5,9 @@ const productRoutes = require('./routes/product.routes');
 const app = express();
 app.use(express.json());
 
+const { name, version } = require('../package.json');
+app.get('/', (req, res) => res.json({ name, version }));
+
 // Kiểm tra sức khỏe: dùng cho healthcheck Docker & CI ở các PROMPT sau
 app.get('/health', (req, res) => {
   const dbUp = mongoose.connection.readyState === 1;

@@ -67,7 +67,7 @@ jobs:
         run: bash scripts/e2e-test.sh http://localhost:3000
 
       - name: Test API theo yeu cau
-        run: node scripts/api-test.mjs
+        run: node scripts/check-api.mjs
 
       - name: Show logs on failure
         if: failure()

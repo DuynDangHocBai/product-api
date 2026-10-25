@@ -7,8 +7,8 @@ const productSchema = new Schema(
     price: { type: Number, required: [true, 'price is required'], min: [0, 'price must be >= 0'] },
     quantity: {
       type: Number,
-      default: 1,
-      min: [1, 'quantity must be >= 1'],
+      default: 0,
+      min: [0, 'quantity must be >= 0'],
       validate: { validator: Number.isInteger, message: 'quantity must be an integer' },
     },
   },

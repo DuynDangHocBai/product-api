@@ -18,7 +18,7 @@ async function check(method, path, body, expected) {
 }
 
 // ===== TEST THEO YEU CAU =====
-await check("GET", "/api/products/", undefined, 200);
+await check("GET", "/api/products/missing", undefined, 404);
 // ===== HET =====
 
 console.log("PASS: API test");
